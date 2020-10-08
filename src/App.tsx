@@ -1,11 +1,25 @@
-import React from 'react';
-import './App.scss';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux';
+import { selectData, fetchGetData } from './features/fetchSlice';
+// components
+import PageA from './pages/PageA'
+import PageB from './pages/PageB'
 
 const App: React.FC<{}> = () => {
+    const dispatch = useDispatch()
+    const data = useSelector(selectData)
+    console.log(data)
+    useEffect(() => {
+        dispatch(fetchGetData())
+    }, [])
     return (
-        <div>
-            <h1>Hello App.tsx</h1>
-        </div>
+        <Router>
+            <Switch>
+                <Route path='/' component={PageA} />
+                <Route path='/pageb' component={PageB} />
+            </Switch>
+        </Router>
     )
 }
 
