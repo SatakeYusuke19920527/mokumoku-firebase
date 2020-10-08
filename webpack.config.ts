@@ -18,6 +18,14 @@ const config: Configuration = {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
             },
+            {
+                test: /\.(sc|c)ss$/i,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader',
+                ],
+            }
         ],
     },
     resolve: {
