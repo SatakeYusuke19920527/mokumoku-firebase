@@ -88,5 +88,4 @@ export const realTimeReadData = async () => {
     console.log(users, 'in firebase');
     return users;
   });
-  console.log(users, 'in firebase2');
 };
