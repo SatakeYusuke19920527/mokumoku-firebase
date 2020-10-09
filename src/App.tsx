@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectData, fetchGetData } from './features/fetchSlice';
 // components
 import PageA from './pages/PageA';
 import PageB from './pages/PageB';
