@@ -24,13 +24,13 @@ const PageA: React.FC<{}> = () => {
     setIsFin(true);
     const trueOrFalse = await addData(name, age, country);
     setIsFin(trueOrFalse);
-    firebaseRealTimeUpdate();
+    const newUser = firebaseRealTimeUpdate();
+    console.log(newUser, 'in PageA');
   };
 
   const firebaseRealTimeUpdate = async () => {
     const UpUsers = await realTimeReadData();
-
-    console.log(UpUsers, 'update data');
+    return UpUsers;
   };
 
   const firebaseDeleteData = async () => {
@@ -76,8 +76,8 @@ const PageA: React.FC<{}> = () => {
           {users.map((user: any, index: any) => (
             <tr key={index}>
               <td>{user.name}</td>
-              <td>{user.country}</td>
               <td>{user.age}</td>
+              <td>{user.country}</td>
             </tr>
           ))}
         </tbody>
