@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 
@@ -15,77 +15,81 @@ var firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
-// db define
-const db = firebase.firestore();
+const auth = firebase.auth();
+const user = auth.currentUser
+const provider = new firebase.auth.GoogleAuthProvider()
 
-/**
- *
- * @param uid
- * @param name
- * @param age
- * @param country
- */
-export const addData = async (name: string, age: number, country: string) => {
-  db.collection('users')
-    .doc(`${name}`)
-    .set({
-      name,
-      age,
-      country,
+export const createUser = async (email: string, password: string) => {
+  let result = ''
+  await auth.createUserWithEmailAndPassword(email, password)
+  .then(res => {
+    console.log(res)
+    console.log('create user success')
+    result = 'success'
     })
-    .then(function () {
-      console.log('Document successfully written!');
-    })
-    .catch(function (error) {
-      console.error('Error writing document: ', error);
-    });
-  return false;
-};
+  .catch(err => {
+    console.log(err)
+    console.log('create user error')
+    result = 'error'
+  })
+  return result
+}
 
-/**
- *
- * @param name
- */
-export const deleteData = async (name: string) => {
-  await db
-    .collection('users')
-    .doc(name)
-    .delete()
-    .then(function () {
-      console.log('Document successfully deleted!');
+export const login = async (email:string, password:string) => {
+  let result = ''
+  await auth.signInWithEmailAndPassword(email, password)
+    .then(res => {
+    console.log(res)
+    console.log('login success')
+    result = 'success'
     })
-    .catch(function (error) {
-      console.error('Error removing document: ', error);
-    });
-  return false;
-};
-/**
- *
- */
-export const readData = async () => {
-  let users: Array<{}> = [];
-  await db
-    .collection('users')
-    .get()
-    .then(function (querySnapshot) {
-      querySnapshot.forEach(function (doc) {
-        users.push(doc.data());
-      });
-    })
-    .catch(function (error) {
-      console.log('Error getting documents: ', error);
-      return error;
-    });
-  return users;
-};
+  .catch(err => {
+    console.log(err)
+    console.log('login error')
+    result = 'error'
+  })
+  return result
+}
 
-export const realTimeReadData = async () => {
-  let users: Array<{}> = [];
-  await db.collection('users').onSnapshot(function (docs) {
-    docs.forEach((doc) => {
-      users.push(doc.data());
+export const userNameUpdate = async (name: string) => {
+  console.log(name, 'this is invoked in userNameUpdate')
+  await user?.updateProfile({
+      displayName: name,
+    }).then(function() {
+      // Update successful.
+      console.log('displayName 更新')
+    }).catch(function(error) {
+      // An error happened.
+      console.log('displayName 更新失敗')
     });
-    console.log(users, 'in firebase');
-    return users;
-  });
-};
+}
+
+export const googleLogin = async () => {
+  let result = ''
+  await auth.signInWithPopup(provider)
+  .then(user => {
+    console.log(user.user?.displayName)
+    result = `success`
+  })
+  .catch(err => {
+    result = `error: ${err}`
+  })
+  return result
+}
+
+export const authState = async () => {
+  await auth.onAuthStateChanged(function(user) {
+  if (user) {
+    // User is signed in.
+    const name = user.displayName;
+    const email = user.email;
+    const photoUrl = user.photoURL;
+    const emailVerified = user.emailVerified;
+    const uid = user.uid;
+    console.log(`name: ${name} | email: ${email} | photoUrl: ${photoUrl} | emailVerrified: ${emailVerified} | uid: ${uid}`)
+  } else {
+    // No user is signed in.
+    console.log(user, 'in firebase else ==========================')
+  }
+});
+}

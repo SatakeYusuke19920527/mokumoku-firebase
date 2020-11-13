@@ -20,7 +20,7 @@ const config: Configuration = {
         use: 'ts-loader',
       },
       {
-        test: /\.(sc|c)ss$/i,
+        test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
     ],
